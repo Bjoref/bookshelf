@@ -1,53 +1,79 @@
-@import './base.css';
+@import './reset.css';
 
-#app {
-  max-width: 1280px;
+:root {
+  --container-width: 1640px;
+  --container-padding: 15px;
+  --container-padding_tablet: 50px;
+  --container-padding_desk: 20px;
+
+  --text-color: #333333;
+  --black-color: #000;
+  --white-color: #fff;
+  --grey-color: #f8f9fb;
+  --bright-grey-color: #f3f3fb;
+  --bright-primary-color: #8a9b6e;
+  --primary-color: #354733;
+  --brown-color: #b99274;
+  --red-color: #d11616;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fonts-stack);
+  background-color: var(--bright-grey-color);
+  font-size: 0;
+}
+
+:root {
+  --fonts-stack: 'Open Sans', sans-serif;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans'),
+    url(./fonts/OpenSans-Regular.woff2) format('woff2'),
+    url(./fonts/OpenSans-Regular.woff) format('woff');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans'),
+    url(./fonts/OpenSans-SemiBold.woff2) format('woff2'),
+    url(./fonts/OpenSans-SemiBold.woff) format('woff');
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans'),
+    url(./fonts/OpenSans-Bold.woff2) format('woff2'),
+    url(./fonts/OpenSans-Bold.woff) format('woff');
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.container {
+  padding: 0 var(--container-padding);
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-  accent-color: var(--color-accent);
-  font-size: 18px;
-}
 
-a,
-.green {
-  text-decoration: none;
-  color: var(--color-accent);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-button {
-  --button-color: var(--color-accent);
-
-  font-size: 1rem;
-  padding: 0.6em 1em;
-  border-radius: 4px;
-  border: 2px solid var(--button-color);
-  color: var(--button-color);
-  background: transparent;
-}
-button:focus {
-  background-color: color-mix(in srgb, var(--button-color), transparent 80%);
-}
-button.second {
-  --button-color: var(--color-second);
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
+  @media (min-width: 575.98px) {
+    padding: 0 var(--container-padding_tablet);
   }
 
-  #app {
-    display: grid;
-    padding: 0 2rem;
+  @media (min-width: 1399.98px) {
+    padding: 0 var(--container-padding_desk);
   }
 }

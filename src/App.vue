@@ -1,33 +1,35 @@
 <template>
-  <div class="container">
-    <header class="header">
-      <router-link to="/catalog">Catalog Page</router-link >
-      <!-- <router-link @click="routeToSettings">Settings Page</router-link > -->
+  <section class="section-login" v-if="!login.login">
+    <LogIn/>
+  </section>
+  <div v-if="login.login">
+    <header>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  
+      <div class="wrapper">
+        <HelloWorld msg="You did it!" />
+  
+        <nav>
+          <RouterLink to="/">Reading List</RouterLink>
+          <RouterLink to="/finished">Finished Books</RouterLink>
+          <RouterLink to="/about">Finished Books</RouterLink>
+        </nav>
+      </div>
     </header>
-    <router-view/>
+  
+    <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter, RouterLink, useRoute } from "vue-router";
+  import { RouterLink, RouterView } from 'vue-router'
+  import HelloWorld from './components/HelloWorld.vue'
+  import LogIn from './components/LogIn.vue'
 
-const router = useRouter();
-const route = useRoute();
+  import { userAuthorization } from '@/stores/login'
+
+  const login = userAuthorization()
 </script>
 
 <style scoped>
-body {
-  background-color: #e1e1e1;
-}
-
-.container {
-  width: 80%;
-  margin: 0 auto;
-}
-
-.header {
-  display: flex;
-  gap: 12px;
-}
 </style>
