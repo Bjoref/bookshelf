@@ -1,5 +1,5 @@
 
-## Bookshelf with vue/ts/scss
+## Bookshelf with vue/pinia/ts/scss
 
 ## Project Setup
 
