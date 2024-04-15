@@ -1,0 +1,53 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  accent-color: var(--color-accent);
+  font-size: 18px;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: var(--color-accent);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+button {
+  --button-color: var(--color-accent);
+
+  font-size: 1rem;
+  padding: 0.6em 1em;
+  border-radius: 4px;
+  border: 2px solid var(--button-color);
+  color: var(--button-color);
+  background: transparent;
+}
+button:focus {
+  background-color: color-mix(in srgb, var(--button-color), transparent 80%);
+}
+button.second {
+  --button-color: var(--color-second);
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    padding: 0 2rem;
+  }
+}
