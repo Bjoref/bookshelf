@@ -1,7 +1,7 @@
 <template>
-  <nav class="header__nav">
-    <ul class="header__nav-list">
-      <li class="header__nav-item">
+  <nav class="section-main__nav">
+    <ul class="section-main__nav-list">
+      <li class="section-main__nav-item">
         <RouterLink to="/">Reading List</RouterLink>
       </li>
       <li>
@@ -18,4 +18,3 @@
 import { RouterLink } from 'vue-router'
 </script>
 
-<style lang="scss"></style>

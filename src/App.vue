@@ -3,22 +3,18 @@
     :authorization="authorization.login"
   />
   <section class="section-welcome" v-if="!authorization.login">
-    <SectionWelcome/>
+    <section-welcome/>
   </section>
-  <div v-if="authorization.login">
-    <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-    </header>
-
-    <RouterView />
-  </div>
+  <section class="section-main" v-if="authorization.login">
+    <section-main/>
+  </section>
 </template>
 
 <script setup lang="ts">
 import TheHeader from './components/TheHeader.vue'
 
-import { RouterView } from 'vue-router'
 import SectionWelcome from './components/SectionWelcome.vue'
+import SectionMain from './components/SectionMain.vue'
 
 import { userAuthorization } from '@/stores/login'
 

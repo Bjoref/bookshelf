@@ -1,29 +1,26 @@
 <template>
-
-  <div>
-    {{ book }}
-  </div>
-
+  <h3 class="section-main__item-title">
+    {{ book.title }}
+  </h3>
+  <p class="section-main__item-author">
+    {{ book.author }}
+  </p>
+  <p class="section-main__item-year">
+    {{ book.publication_year }}
+  </p>
+  <p v-for="genre in book.genre" :key="genre" class="section-main__item-genre">
+    {{ genre }}
+  </p>
+  <p class="section-main__item-description">
+    {{ book.description }}
+  </p>
+  <img :src="book.cover_image" alt="Book Image" class="section-main__item-image"/>
 </template>
 
 <script setup lang="ts">
-import type {IBook} from "@/types/book";
-import {ref} from "vue";
+import type { IBook } from '@/types/book'
 
-const productPrivate = ref<IBook>();
-const getBook = async (productId: number): Promise<void>  => {
-  const fetchResponse = await fetch(`https://freetestapi.com/api/v1/books/${productId}`);
-  const response = await fetchResponse.json();
-  productPrivate.value = response
-}
-
-
-const props = defineProps<{ book: IBook }>();
-
-getBook(props.book.id)
-
+const props = defineProps<{ book: IBook }>()
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,11 +1,10 @@
 <template>
   <header class="header">
     <div class="container header__container">
-      <a href="#!" class="header__logo-link">
+      <a href="#" class="header__logo-link">
         <img class="header__logo-img" src="@/assets/logo.svg" alt="Logo" />
       </a>
       <div class="header__content-right">
-        <NavList v-if="authorization" />
         <AuthorizationButton :button-text="authorization ? 'Logout' : 'Login'" />
       </div>
     </div>
@@ -14,7 +13,6 @@
 
 <script setup lang="ts">
 import AuthorizationButton from './TheHeaderAuthorizationButton.vue'
-import NavList from './TheHeaderNavList.vue'
 
 defineProps<{
   authorization: boolean
@@ -37,16 +35,6 @@ defineProps<{
   &__logo-img {
     width: 150px;
     height: 42px;
-  }
-
-  &__nav-list {
-    margin-right: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    grid-gap: 10px;
-    font-size: 16px;
   }
 
   &__content {
