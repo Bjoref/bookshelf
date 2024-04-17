@@ -4,47 +4,37 @@
     <input type="searchText" v-model="searchText" placeholder="Введите больше 2-ух символов" />
 
   </div> -->
-  <ul class="section-main__list">
-    <li class="section-main__item" v-for="book in books" :key="book.id">
+  <ul class="book-list__list">
+    <li class="book-list__item" v-for="book in books" :key="book.id">
       <BookCard :book="book" />
     </li>
   </ul>
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from 'vue'
-import { getBooks } from '@/api/getBooks'
-import BookCard from '@/components/BookCard.vue'
 import type { IBook } from '@/types/book'
+import BookCard from '../components/BookCard.vue'
 
-const books = ref<IBook[]>([])
-
-const searchText = ref('')
-
-const loadProducts = async (searchText?: string) => {
-  const response = getBooks(searchText)
-  books.value = await response
-}
-
-watch(
-  searchText,
-  (newValue, oldValue) => {
-    if (newValue.length > 2) {
-      loadProducts(newValue)
-    } else {
-      loadProducts()
-    }
-  },
-  { immediate: true }
-)
+const props = defineProps<{ books: IBook[] }>()
 </script>
 
 <style lang="scss">
-.section-main {
+.book-list {
   &__list {
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     grid-gap: 20px;
+  }
+
+  &__item {
+    display: flex;
+    grid-gap: 10px;
+
+    &-image {
+      width: 150px;
+      height: 200px;
+    }
   }
 }
 </style>

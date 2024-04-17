@@ -2,13 +2,13 @@
   <nav class="section-main__nav">
     <ul class="section-main__nav-list">
       <li class="section-main__nav-item">
-        <RouterLink to="/">Reading List</RouterLink>
+        <RouterLink class="section-main__nav-link" to="/">Bookshelf</RouterLink>
       </li>
-      <li>
-        <RouterLink to="/finished">Finished Books</RouterLink>
+      <li class="section-main__nav-item">
+        <RouterLink class="section-main__nav-link" to="/finished">Finished Books</RouterLink>
       </li>
-      <li>
-        <RouterLink to="/about">Finished Books</RouterLink>
+      <li class="section-main__nav-item">
+        <RouterLink class="section-main__nav-link" to="/about">Finished Books</RouterLink>
       </li>
     </ul>
   </nav>

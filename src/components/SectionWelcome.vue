@@ -38,7 +38,7 @@
         &&
         <a
           class="section-welcome__item-link"
-          href="https://cli.vuejs.org/guide/css.html"
+          href="https://cli.vuejs.org/guide/css.html#pre-processors"
           target="_blank"
         >
           SCSS in Vue
