@@ -6,7 +6,7 @@
   </div> -->
   <ul class="book-list__list">
     <li class="book-list__item" v-for="book in books" :key="book.id">
-      <BookCard :book="book" />
+      <BookCard :book="book" :can-add="canAdd" :can-remove="canRemove" />
     </li>
   </ul>
 </template>
@@ -15,7 +15,7 @@
 import type { IBook } from '@/types/book'
 import BookCard from '../components/BookCard.vue'
 
-const props = defineProps<{ books: IBook[] }>()
+const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolean }>()
 </script>
 
 <style lang="scss">
@@ -27,13 +27,86 @@ const props = defineProps<{ books: IBook[] }>()
     grid-gap: 20px;
   }
 
+  &__content {
+    &-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+
   &__item {
     display: flex;
     grid-gap: 10px;
+    background-color: var(--white-color);
+    padding: 16px;
+
+    &-description {
+      margin-bottom: 16px;
+    }
+
+    &-genre {
+      margin-bottom: 8px;
+    }
 
     &-image {
       width: 150px;
       height: 200px;
+    }
+
+    &-button {
+      width: 150px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      &_add {
+        margin-bottom: 8px;
+        border: 2px solid var(--primary-color);
+        transition:
+          border 0.2s,
+          color 0.2s,
+          background-color 0.2s;
+        &:hover {
+          color: var(--bright-primary-color);
+          border: 2px solid var(--bright-primary-color);
+        }
+        &:active {
+          color: var(--white-color);
+          border: 2px solid var(--primary-color);
+          background-color: var(--primary-color);
+        }
+      }
+      .un:hover::after {
+        width: 100%;
+      }
+      &_delete {
+        display: inline-block;
+
+        transition:
+          color 0.2s,
+          background-color 0.2s;
+        &::after {
+          content: '';
+          width: 0px;
+          height: 1px;
+          display: block;
+          background: var(--primary-color);
+          transition: 300ms;
+        }
+
+        &:hover {
+          &::after {
+            width: 100%;
+          }
+        }
+        &:active {
+          color: var(--white-color);
+          border: 2px solid var(--primary-color);
+          background-color: var(--primary-color);
+        }
+      }
     }
   }
 }

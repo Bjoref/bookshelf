@@ -3,7 +3,7 @@
     <Pagination :pages-number="books.length" :current-page="1" @get-page="getPage"/>
     <div class="section-main__content">
       <NavList/>
-      <RouterView :books="bookList.currentBookList"/>
+      <RouterView :books="bookList.currentBookList" :can-add="canAdd" :can-remove="canRemove"/>
     </div>
   </div>
 </template>
@@ -20,6 +20,9 @@ import { getBooks } from '@/api/getBooks'
 import type { IPage } from '@/types/page'
 
 const bookList = newBookList();
+
+const canAdd = ref(true)
+const canRemove = ref(true)
 
 const books = ref<IPage[]>([])
 

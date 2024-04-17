@@ -19,10 +19,6 @@ import SectionMain from './components/SectionMain.vue'
 import { userAuthorization } from '@/stores/login'
 
 const authorization = userAuthorization()
-
-import { newBookList } from '@/stores/currentBookList'
-
-const bookList = newBookList();
 </script>
 
 <style scoped></style>
