@@ -3,13 +3,15 @@ import { defineStore } from 'pinia'
 
 export const userAuthorization = defineStore('authorization', () => {
   const login = ref(false)
+  const loggedIn = ref(false)
   function logToggle():void {
     if (login.value === true) {
+      console.log(1)
       login.value = false
     } else {
       login.value = true
     }
   }
 
-  return { login, logToggle }
+  return { login, logToggle, loggedIn }
 })

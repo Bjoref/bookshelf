@@ -5,8 +5,14 @@
 
   </div> -->
   <ul class="book-list__list">
-    <li class="book-list__item" v-for="book in books" :key="book.id">
-      <BookCard :book="book" :can-add="canAdd" :can-remove="canRemove" />
+    <li class="book-list__item" v-for="book in props.books" :key="book.id">
+      <BookCard
+        :book="book"
+        :can-add="canAdd"
+        :can-remove="canRemove"
+        @add-to-read="addToRead"
+        @add-to-already-read="addToAlreadyRead"
+      />
     </li>
   </ul>
 </template>
@@ -14,7 +20,14 @@
 <script setup lang="ts">
 import type { IBook } from '@/types/book'
 import BookCard from '../components/BookCard.vue'
+const emits = defineEmits(['addToRead', 'addToAlreadyRead'])
 
+const addToRead = (id: number) => {
+  emits('addToRead', id)
+}
+const addToAlreadyRead = (id: number) => {
+  emits('addToAlreadyRead', id)
+}
 const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolean }>()
 </script>
 

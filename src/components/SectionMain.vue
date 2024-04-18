@@ -1,9 +1,21 @@
 <template>
   <div class="container section-main__container">
-    <Pagination :pages-number="books.length" :current-page="1" @get-page="getPage"/>
+    <Pagination :pages-number="books.length" :current-page="1" @get-page="getPage" />
     <div class="section-main__content">
-      <NavList/>
-      <RouterView :books="bookList.currentBookList" :can-add="canAdd" :can-remove="canRemove"/>
+      <NavList @checkout-nav="checkoutNav" />
+      <RouterView
+        :books="
+          router.currentRoute.value.name === 'home'
+            ? bookList.currentBookList
+            : router.currentRoute.value.name === 'readinglist'
+              ? bookList.toReadList
+              : bookList.alreadyReadList
+        "
+        :can-add="canAdd"
+        :can-remove="canRemove"
+        @add-to-read="addToRead"
+        @add-to-already-read="addToAlreadyRead"
+      />
     </div>
   </div>
 </template>
@@ -13,13 +25,18 @@ import { watch, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import NavList from './SectionMainNavList.vue'
 import Pagination from './SectionMainPagination.vue'
+import { sliceIntoChunks } from '@/functions/sliceIntoChunks'
+import router from '@/router/router'
 
 import { newBookList } from '@/stores/currentBookList'
+
+import { userAuthorization } from '@/stores/login'
 
 import { getBooks } from '@/api/getBooks'
 import type { IPage } from '@/types/page'
 
-const bookList = newBookList();
+const bookList = newBookList()
+const authorization = userAuthorization()
 
 const canAdd = ref(true)
 const canRemove = ref(true)
@@ -28,30 +45,87 @@ const books = ref<IPage[]>([])
 
 const searchText = ref('')
 
-const loadProducts = async (searchText?: string) => {
-  const response = getBooks(searchText)
-  books.value = await response
+const checkoutNav = (to: string) => {
+  switch (to) {
+    case 'home':
+      canAdd.value = true
+      canRemove.value = true
+      books.value = sliceIntoChunks(bookList.allBooks, 10)
+      break
+    case 'readinglist':
+      canAdd.value = false
+      books.value = sliceIntoChunks(bookList.toReadList, 10)
+      break
+    case 'alreadyreadlist':
+      canAdd.value = true
+      canRemove.value = false
+      books.value = sliceIntoChunks(bookList.alreadyReadList, 10)
+      break
+  }
 }
 
-const getPage = (selectedPage:number):void => {
-  books.value.forEach((item) => {
-    if(item.page === selectedPage) {
-      bookList.currentBookList = item.content
+const loadProducts = async (searchText?: string) => {
+  if(!authorization.loggedIn) {
+    const response = getBooks(searchText)
+    books.value = await response
+    authorization.loggedIn = true
+  } else {
+    return
+  }
+}
+
+const getPage = (selectedPage: number): void => {
+  if (!books.value.length) {
+    bookList.currentBookList = []
+  } else {
+    books.value.forEach((item) => {
+      if (item.page === selectedPage) {
+        bookList.currentBookList = item.content
+      }
+    })
+  }
+}
+
+const addToRead = (id: number) => {
+  bookList.allBooks.forEach((book, index) => {
+    if (book.id === id) {
+      bookList.toReadList.push(book)
+      bookList.allBooks.splice(index, 1)
     }
   })
+  books.value = sliceIntoChunks(bookList.allBooks, 10)
 }
+
+const addToAlreadyRead = (id: number) => {
+  bookList.allBooks.forEach((book, index) => {
+    if (book.id === id) {
+      bookList.alreadyReadList.push(book)
+      bookList.allBooks.splice(index, 1)
+    }
+  })
+  books.value = sliceIntoChunks(bookList.allBooks, 10)
+}
+
+router.beforeEach((to) => {
+  checkoutNav(to.name as string)
+})
+
+checkoutNav(router.currentRoute.value.name as string)
 
 watch(
   books,
-  (newValue, oldValue) => {
+  () => {
+    if (!books.value.length) {
+      bookList.currentBookList = []
+      return
+    }
     getPage(1)
   },
   { immediate: true }
 )
-
 watch(
   searchText,
-  (newValue, oldValue) => {
+  (newValue) => {
     if (newValue.length > 2) {
       loadProducts(newValue)
     } else {
@@ -86,7 +160,9 @@ watch(
       color: var(--primary-color);
       font-weight: 700;
       border: 2px solid var(--primary-color);
-      transition: border .2s, color .2s;
+      transition:
+        border 0.2s,
+        color 0.2s;
       &_active {
         color: var(--bright-primary-color);
         border: 2px solid var(--bright-primary-color);

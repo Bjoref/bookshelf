@@ -10,16 +10,17 @@ const router = createRouter({
       component: BookListView
     },
     {
-      path: '/finished',
-      name: 'finished',
-      component: () => import('../views/FinishedView.vue')
+      path: '/readinglist',
+      name: 'readinglist',
+      component: () => import('../views/BookListView.vue')
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/FinishedView.vue')
+      path: '/alreadyreadlist',
+      name: 'alreadyreadlist',
+      component: () => import('../views/BookListView.vue')
     }
   ]
 })
 
 export default router
+
