@@ -1,6 +1,6 @@
 <template>
   <div class="container section-main__container">
-    <Pagination :pages-number="books.length" :current-page="1" @get-page="getPage" />
+    <Pagination :pages-number="books.length" :current-page="1" :max-pages="currentPage.maxPages" @get-page="getPage" />
     <div class="section-main__content">
       <NavList @checkout-nav="checkoutNav" />
       <RouterView
@@ -29,13 +29,14 @@ import { sliceIntoChunks } from '@/functions/sliceIntoChunks'
 import router from '@/router/router'
 
 import { newBookList } from '@/stores/currentBookList'
-
+import { pagesData } from '@/stores/currentPage'
 import { userAuthorization } from '@/stores/login'
 
 import { getBooks } from '@/api/getBooks'
 import type { IPage } from '@/types/page'
 
 const bookList = newBookList()
+const currentPage = pagesData()
 const authorization = userAuthorization()
 
 const canAdd = ref(true)
@@ -68,6 +69,8 @@ const loadProducts = async (searchText?: string) => {
   if (!authorization.loggedIn) {
     const response = getBooks(searchText)
     books.value = await response
+    currentPage.maxPages = 3
+    currentPage.currentPage = 1
     authorization.loggedIn = true
   } else {
     return
@@ -75,6 +78,7 @@ const loadProducts = async (searchText?: string) => {
 }
 
 const getPage = (selectedPage: number): void => {
+  currentPage.currentPage = selectedPage
   if (!books.value.length) {
     bookList.currentBookList = []
   } else {
@@ -160,6 +164,7 @@ watch(
   &__pagination {
     margin-bottom: 20px;
     display: flex;
+    align-items: center;
     grid-gap: 10px;
 
     &-button {
@@ -176,6 +181,11 @@ watch(
       &_active {
         color: var(--bright-primary-color);
         border: 2px solid var(--bright-primary-color);
+      }
+      &_disabled {
+        pointer-events: none;
+        opacity: 0.5;
+        background-color: var(--grey-color);
       }
     }
   }
