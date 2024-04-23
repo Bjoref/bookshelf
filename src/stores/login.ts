@@ -6,7 +6,6 @@ export const userAuthorization = defineStore('authorization', () => {
   const loggedIn = ref(false)
   function logToggle():void {
     if (login.value === true) {
-      console.log(1)
       login.value = false
     } else {
       login.value = true

@@ -65,7 +65,7 @@ const checkoutNav = (to: string) => {
 }
 
 const loadProducts = async (searchText?: string) => {
-  if(!authorization.loggedIn) {
+  if (!authorization.loggedIn) {
     const response = getBooks(searchText)
     books.value = await response
     authorization.loggedIn = true
@@ -91,8 +91,18 @@ const addToRead = (id: number) => {
     if (book.id === id) {
       bookList.toReadList.push(book)
       bookList.allBooks.splice(index, 1)
+      return
     }
   })
+
+  if (bookList.alreadyReadList.length > 0) {
+    bookList.alreadyReadList.forEach((book, index) => {
+      if (book.id === id) {
+        bookList.alreadyReadList.splice(index, 1)
+        bookList.toReadList.push(book)
+      }
+    })
+  }
   books.value = sliceIntoChunks(bookList.allBooks, 10)
 }
 
