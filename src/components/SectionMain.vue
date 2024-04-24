@@ -1,6 +1,11 @@
 <template>
   <div class="container section-main__container">
-    <Pagination :pages-number="books.length" :current-page="1" :max-pages="currentPage.maxPages" @get-page="getPage" />
+    <Pagination
+      :pages-number="currentPage.pages"
+      :current-page="currentPage.currentPage"
+      :max-pages="currentPage.maxPages"
+      @get-page="getPage"
+    />
     <div class="section-main__content">
       <NavList @checkout-nav="checkoutNav" />
       <RouterView
@@ -69,7 +74,7 @@ const loadProducts = async (searchText?: string) => {
   if (!authorization.loggedIn) {
     const response = getBooks(searchText)
     books.value = await response
-    currentPage.maxPages = 3
+    currentPage.maxPages = 5
     currentPage.currentPage = 1
     authorization.loggedIn = true
   } else {
@@ -78,10 +83,11 @@ const loadProducts = async (searchText?: string) => {
 }
 
 const getPage = (selectedPage: number): void => {
-  currentPage.currentPage = selectedPage
   if (!books.value.length) {
     bookList.currentBookList = []
   } else {
+    currentPage.currentPage = selectedPage
+    currentPage.setPages(books.value.length)
     books.value.forEach((item) => {
       if (item.page === selectedPage) {
         bookList.currentBookList = item.content
@@ -108,6 +114,7 @@ const addToRead = (id: number) => {
     })
   }
   books.value = sliceIntoChunks(bookList.allBooks, 10)
+  updateMaxPages(books.value)
 }
 
 const addToAlreadyRead = (id: number) => {
@@ -118,6 +125,13 @@ const addToAlreadyRead = (id: number) => {
     }
   })
   books.value = sliceIntoChunks(bookList.allBooks, 10)
+  updateMaxPages(books.value)
+}
+
+const updateMaxPages = (value: IPage[]): void => {
+  if (value.length <= currentPage.pages.length) {
+    currentPage.setPages(value.length)
+  }
 }
 
 router.beforeEach((to) => {

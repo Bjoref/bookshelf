@@ -1,7 +1,11 @@
 <template>
   <ul class="section-main__pagination">
     <li class="section-main__pagination-item">
-      <button class="section-main__pagination-button" :disabled="!canPaginateLeft" :class="{ 'section-main__pagination-button_disabled': !canPaginateLeft }">
+      <button
+        class="section-main__pagination-button"
+        :disabled="!canPaginateLeft"
+        :class="{ 'section-main__pagination-button_disabled': !canPaginateLeft }"
+      >
         <svg
           width="16px"
           height="16px"
@@ -19,17 +23,22 @@
         </svg>
       </button>
     </li>
-    <li class="section-main__pagination-item" v-for="(number, index) in maxPages" :key="number" :data-test="index">
+    <li class="section-main__pagination-item" v-for="number in pagesNumber" :key="number">
       <button
         @click="getPage"
         class="section-main__pagination-button"
         :class="{ 'section-main__pagination-button_active': number === currentPage }"
+        :data-test="number"
       >
         {{ number }}
       </button>
     </li>
     <li class="section-main__pagination-item">
-      <button class="section-main__pagination-button" :disabled="!canPaginateRight" :class="{ 'section-main__pagination-button_disabled': !canPaginateRight }">
+      <button
+        class="section-main__pagination-button"
+        :disabled="!canPaginateRight"
+        :class="{ 'section-main__pagination-button_disabled': !canPaginateRight }"
+      >
         <svg
           width="16px"
           height="16px"
@@ -52,15 +61,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps<{ pagesNumber: number; currentPage: number; maxPages: number }>()
+const props = defineProps<{ pagesNumber: number[]; currentPage: number; maxPages: number }>()
 const emits = defineEmits(['getPage'])
 
 const canPaginateLeft = computed(() => false)
 const canPaginateRight = computed(() => true)
-
-const pagesNumberPrivate = computed(() => {
-  return props.pagesNumber
-})
 
 const getPage = (event: Event) => {
   const target = event.target as HTMLButtonElement

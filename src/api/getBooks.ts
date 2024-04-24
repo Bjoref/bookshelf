@@ -10,9 +10,7 @@ export const getBooks = async (searchText?:string):Promise<IPage[]> => {
         const response = await fetchResponse.json();
         const products: IBook[] = searchText ? response.filter((el: IBook) => el.title.toLowerCase().includes(searchText.toLowerCase())) : response
         bookList.allBooks = products
-
         const chunkedArray: IPage[] = sliceIntoChunks(products, 10);
-
 
         return chunkedArray
     } catch(error) {
