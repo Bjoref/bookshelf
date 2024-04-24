@@ -118,10 +118,10 @@ const addToRead = (id: number) => {
 }
 
 const addToAlreadyRead = (id: number) => {
-  bookList.allBooks.forEach((book, index) => {
+  bookList.toReadList.forEach((book, index) => {
     if (book.id === id) {
       bookList.alreadyReadList.push(book)
-      bookList.allBooks.splice(index, 1)
+      bookList.toReadList.splice(index, 1)
     }
   })
   books.value = sliceIntoChunks(bookList.allBooks, 10)
