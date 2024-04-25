@@ -9,13 +9,7 @@
     <div class="section-main__content">
       <NavList @checkout-nav="checkoutNav" />
       <RouterView
-        :books="
-          router.currentRoute.value.name === 'home'
-            ? bookList.currentBookList
-            : router.currentRoute.value.name === 'readinglist'
-              ? bookList.toReadList
-              : bookList.alreadyReadList
-        "
+        :books="bookList.currentBookList"
         :can-add="canAdd"
         :can-remove="canRemove"
         @add-to-read="addToRead"
@@ -39,6 +33,7 @@ import { userAuthorization } from '@/stores/login'
 
 import { getBooks } from '@/api/getBooks'
 import type { IPage } from '@/types/page'
+import type { IBook } from '@/types/book'
 
 const bookList = newBookList()
 const currentPage = pagesData()
@@ -56,16 +51,16 @@ const checkoutNav = (to: string) => {
     case 'home':
       canAdd.value = true
       canRemove.value = true
-      books.value = sliceIntoChunks(bookList.allBooks, 10)
+      // books.value = sliceIntoChunks(bookList.allBooks, 10)
       break
     case 'readinglist':
       canAdd.value = false
-      books.value = sliceIntoChunks(bookList.toReadList, 10)
+      // books.value = sliceIntoChunks(bookList.toReadList, 10)
       break
     case 'alreadyreadlist':
       canAdd.value = true
       canRemove.value = false
-      books.value = sliceIntoChunks(bookList.alreadyReadList, 10)
+      // books.value = sliceIntoChunks(bookList.alreadyReadList, 10)
       break
   }
 }
@@ -73,6 +68,7 @@ const checkoutNav = (to: string) => {
 const loadProducts = async (searchText?: string) => {
   if (!authorization.loggedIn) {
     const response = getBooks(searchText)
+    bookList.bookshelfList = await response
     books.value = await response
     currentPage.maxPages = 5
     currentPage.currentPage = 1
@@ -83,49 +79,48 @@ const loadProducts = async (searchText?: string) => {
 }
 
 const getPage = (selectedPage: number): void => {
-  if (!books.value.length) {
-    bookList.currentBookList = []
-  } else {
-    currentPage.currentPage = selectedPage
-    currentPage.setPages(books.value.length)
-    books.value.forEach((item) => {
-      if (item.page === selectedPage) {
-        bookList.currentBookList = item.content
-      }
-    })
-  }
+  console.log(selectedPage)
+  currentPage.currentPage = selectedPage
+  currentPage.setPages(books.value.length)
+  bookList.currentBookList = bookList.bookshelfList[selectedPage - 1].content
 }
 
 const addToRead = (id: number) => {
-  bookList.allBooks.forEach((book, index) => {
-    if (book.id === id) {
-      bookList.toReadList.push(book)
-      bookList.allBooks.splice(index, 1)
-      return
-    }
-  })
+  collectItemsInArray(bookList.bookshelfList, id)
+  // bookList.bookshelfList.forEach((item) => {
+  //   console.log(item)
+  // })
+}
 
-  if (bookList.alreadyReadList.length > 0) {
-    bookList.alreadyReadList.forEach((book, index) => {
-      if (book.id === id) {
-        bookList.alreadyReadList.splice(index, 1)
-        bookList.toReadList.push(book)
-      }
-    })
+const collectItemsInArray = (pagesArray: IPage[], id: number): void => {
+  let arrayIndex = Math.round(pagesArray.length / 2)
+
+  arrayIndex = binarySearchArray(arrayIndex, pagesArray, id)
+}
+
+const binarySearchArray = (arrayIndex: number, pagesArray: IPage[], id: number): number => {
+  if (
+    id > pagesArray[arrayIndex].content[0].id &&
+    id < pagesArray[arrayIndex].content[pagesArray[arrayIndex].content.length - 1].id
+  ) {
+    return arrayIndex
+  } else if (id < pagesArray[arrayIndex].content[0].id) {
+    arrayIndex -= 1
+  } else {
+    arrayIndex += 1
   }
-  books.value = sliceIntoChunks(bookList.allBooks, 10)
-  updateMaxPages(books.value)
+  
 }
 
 const addToAlreadyRead = (id: number) => {
-  bookList.toReadList.forEach((book, index) => {
-    if (book.id === id) {
-      bookList.alreadyReadList.push(book)
-      bookList.toReadList.splice(index, 1)
-    }
-  })
-  books.value = sliceIntoChunks(bookList.allBooks, 10)
-  updateMaxPages(books.value)
+  // bookList.toReadList.forEach((book, index) => {
+  //   if (book.id === id) {
+  //     bookList.alreadyReadList.push(book)
+  //     bookList.toReadList.splice(index, 1)
+  //   }
+  // })
+  // books.value = sliceIntoChunks(bookList.allBooks, 10)
+  // updateMaxPages(books.value)
 }
 
 const updateMaxPages = (value: IPage[]): void => {
