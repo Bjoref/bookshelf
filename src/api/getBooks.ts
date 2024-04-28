@@ -1,6 +1,6 @@
 import type { IBook } from "@/types/book";
 import type { IPage } from "@/types/page";
-import { sliceIntoChunks } from "@/functions/sliceIntoChunks";
+import { sliceIntoChunks } from "@/api/sliceIntoChunks";
 
 export const getBooks = async (searchText?:string):Promise<IPage[]> => {
     try {

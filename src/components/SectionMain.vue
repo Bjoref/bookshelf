@@ -24,14 +24,20 @@ import { watch, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import NavList from './SectionMainNavList.vue'
 import Pagination from './SectionMainPagination.vue'
-import { sliceIntoChunks } from '@/functions/sliceIntoChunks'
 import router from '@/router/router'
 
+//stores
 import { newBookList } from '@/stores/currentBookList'
 import { pagesData } from '@/stores/currentPage'
 import { userAuthorization } from '@/stores/login'
 
+//api
 import { getBooks } from '@/api/getBooks'
+import { sliceIntoChunks } from '@/api/sliceIntoChunks'
+import { getPage } from '@/api/getPage'
+import { binarySearch } from '@/api/binarySearch'
+
+//types
 import type { IPage } from '@/types/page'
 import type { IBook } from '@/types/book'
 
@@ -43,6 +49,8 @@ const canAdd = ref(true)
 const canRemove = ref(true)
 
 const books = ref<IPage[]>([])
+
+const arrayIndex = ref<number>(0)
 
 const searchText = ref('')
 
@@ -78,38 +86,28 @@ const loadProducts = async (searchText?: string) => {
   }
 }
 
-const getPage = (selectedPage: number): void => {
-  console.log(selectedPage)
-  currentPage.currentPage = selectedPage
-  currentPage.setPages(books.value.length)
-  bookList.currentBookList = bookList.bookshelfList[selectedPage - 1].content
-}
-
 const addToRead = (id: number) => {
-  collectItemsInArray(bookList.bookshelfList, id)
+  if (router.currentRoute.value.name === 'home') {
+    if (bookList.bookshelfList.length) {
+      bookList.bookshelfList = sliceIntoChunks(binarySearch(bookList.bookshelfList, id), 10)
+      bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage-1].content
+    }
+  }
+  if (router.currentRoute.value.name === 'readinglist') {
+    if (bookList.toReadList.length) {
+      bookList.toReadList= sliceIntoChunks(binarySearch(bookList.toReadList, id), 10)
+    }
+  }
+  if (router.currentRoute.value.name === 'alreadyreadlist') {
+    if (bookList.alreadyReadList.length) {
+      bookList.alreadyReadList= sliceIntoChunks(binarySearch(bookList.alreadyReadList, id), 10)
+    } 
+  }
+  // let foundId = binarySearch(pagesArray, id)
+  // console.log(foundId)
   // bookList.bookshelfList.forEach((item) => {
   //   console.log(item)
   // })
-}
-
-const collectItemsInArray = (pagesArray: IPage[], id: number): void => {
-  let arrayIndex = Math.round(pagesArray.length / 2)
-
-  arrayIndex = binarySearchArray(arrayIndex, pagesArray, id)
-}
-
-const binarySearchArray = (arrayIndex: number, pagesArray: IPage[], id: number): number => {
-  if (
-    id > pagesArray[arrayIndex].content[0].id &&
-    id < pagesArray[arrayIndex].content[pagesArray[arrayIndex].content.length - 1].id
-  ) {
-    return arrayIndex
-  } else if (id < pagesArray[arrayIndex].content[0].id) {
-    arrayIndex -= 1
-  } else {
-    arrayIndex += 1
-  }
-  
 }
 
 const addToAlreadyRead = (id: number) => {
@@ -142,7 +140,7 @@ watch(
       bookList.currentBookList = []
       return
     }
-    getPage(1)
+    getPage(1, books.value.length)
   },
   { immediate: true }
 )
