@@ -35,11 +35,13 @@ import { userAuthorization } from '@/stores/login'
 import { getBooks } from '@/api/getBooks'
 import { sliceIntoChunks } from '@/api/sliceIntoChunks'
 import { getPage } from '@/api/getPage'
-import { binarySearch } from '@/api/binarySearch'
+import { returnArrayAndExcludedObj } from '@/api/returnArrayAndExcludedObj'
+import { intoOneArray } from '@/api/intoOneArray'
 
 //types
 import type { IPage } from '@/types/page'
 import type { IBook } from '@/types/book'
+import type { IObjInSearch } from '@/types/objInSearch'
 
 const bookList = newBookList()
 const currentPage = pagesData()
@@ -50,8 +52,6 @@ const canRemove = ref(true)
 
 const books = ref<IPage[]>([])
 
-const arrayIndex = ref<number>(0)
-
 const searchText = ref('')
 
 const checkoutNav = (to: string) => {
@@ -59,16 +59,16 @@ const checkoutNav = (to: string) => {
     case 'home':
       canAdd.value = true
       canRemove.value = true
-      // books.value = sliceIntoChunks(bookList.allBooks, 10)
+      getPage(1, intoOneArray(bookList.bookshelfList).length, bookList.bookshelfList)
       break
     case 'readinglist':
       canAdd.value = false
-      // books.value = sliceIntoChunks(bookList.toReadList, 10)
+      getPage(1, intoOneArray(bookList.toReadList).length, bookList.toReadList)
       break
     case 'alreadyreadlist':
       canAdd.value = true
       canRemove.value = false
-      // books.value = sliceIntoChunks(bookList.alreadyReadList, 10)
+      getPage(1, intoOneArray(bookList.alreadyReadList).length, bookList.alreadyReadList)
       break
   }
 }
@@ -89,21 +89,29 @@ const loadProducts = async (searchText?: string) => {
 const addToRead = (id: number) => {
   if (router.currentRoute.value.name === 'home') {
     if (bookList.bookshelfList.length) {
-      bookList.bookshelfList = sliceIntoChunks(binarySearch(bookList.bookshelfList, id), 10)
+      const obj:IObjInSearch = returnArrayAndExcludedObj(bookList.bookshelfList, id)
+      bookList.bookshelfList = sliceIntoChunks(obj.newArray, 10)
       bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage-1].content
+      if(!bookList.toReadList.length) {
+        bookList.toReadList = sliceIntoChunks(obj.excluded, 10)
+      } else {
+        const privateArray = intoOneArray(bookList.toReadList)
+        privateArray.push(obj.excluded[0])
+        bookList.toReadList = sliceIntoChunks(privateArray, 10)
+      }
     }
   }
-  if (router.currentRoute.value.name === 'readinglist') {
-    if (bookList.toReadList.length) {
-      bookList.toReadList= sliceIntoChunks(binarySearch(bookList.toReadList, id), 10)
-    }
-  }
-  if (router.currentRoute.value.name === 'alreadyreadlist') {
-    if (bookList.alreadyReadList.length) {
-      bookList.alreadyReadList= sliceIntoChunks(binarySearch(bookList.alreadyReadList, id), 10)
-    } 
-  }
-  // let foundId = binarySearch(pagesArray, id)
+  // if (router.currentRoute.value.name === 'readinglist') {
+  //   if (bookList.toReadList.length) {
+  //     bookList.toReadList= sliceIntoChunks(returnArrayAndExcludedObj(bookList.toReadList, id), 10)
+  //   }
+  // }
+  // if (router.currentRoute.value.name === 'alreadyreadlist') {
+  //   if (bookList.alreadyReadList.length) {
+  //     bookList.alreadyReadList= sliceIntoChunks(returnArrayAndExcludedObj(bookList.alreadyReadList, id), 10)
+  //   } 
+  // }
+  // let foundId = returnArrayAndExcludedObj(pagesArray, id)
   // console.log(foundId)
   // bookList.bookshelfList.forEach((item) => {
   //   console.log(item)
@@ -131,7 +139,6 @@ router.beforeEach((to) => {
   checkoutNav(to.name as string)
 })
 
-checkoutNav(router.currentRoute.value.name as string)
 
 watch(
   books,
@@ -140,7 +147,7 @@ watch(
       bookList.currentBookList = []
       return
     }
-    getPage(1, books.value.length)
+    checkoutNav(router.currentRoute.value.name as string)
   },
   { immediate: true }
 )
