@@ -11,7 +11,7 @@
         :can-add="canAdd"
         :can-remove="canRemove"
         @add-to-read="addToRead"
-        @add-to-already-read="addToAlreadyRead"
+        @add-to-already-read-parent="addToAlreadyReadParent"
       />
     </li>
   </ul>
@@ -20,13 +20,13 @@
 <script setup lang="ts">
 import type { IBook } from '@/types/book'
 import BookCard from '../components/BookCard.vue'
-const emits = defineEmits(['addToRead', 'addToAlreadyRead'])
+const emits = defineEmits(['addToRead', 'addToAlreadyReadParent'])
 
 const addToRead = (id: number) => {
   emits('addToRead', id)
 }
-const addToAlreadyRead = (id: number) => {
-  emits('addToAlreadyRead', id)
+const addToAlreadyReadParent = (id: number) => {
+  emits('addToAlreadyReadParent', id)
 }
 const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolean }>()
 </script>

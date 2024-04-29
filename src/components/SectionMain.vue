@@ -13,7 +13,7 @@
         :can-add="canAdd"
         :can-remove="canRemove"
         @add-to-read="addToRead"
-        @add-to-already-read="addToAlreadyRead"
+        @add-to-already-read-parent="addToAlreadyReadParent"
       />
     </div>
   </div>
@@ -89,10 +89,10 @@ const loadProducts = async (searchText?: string) => {
 const addToRead = (id: number) => {
   if (router.currentRoute.value.name === 'home') {
     if (bookList.bookshelfList.length) {
-      const obj:IObjInSearch = returnArrayAndExcludedObj(bookList.bookshelfList, id)
+      const obj: IObjInSearch = returnArrayAndExcludedObj(bookList.bookshelfList, id)
       bookList.bookshelfList = sliceIntoChunks(obj.newArray, 10)
-      bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage-1].content
-      if(!bookList.toReadList.length) {
+      bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage - 1].content
+      if (!bookList.toReadList.length) {
         bookList.toReadList = sliceIntoChunks(obj.excluded, 10)
       } else {
         const privateArray = intoOneArray(bookList.toReadList)
@@ -109,7 +109,7 @@ const addToRead = (id: number) => {
   // if (router.currentRoute.value.name === 'alreadyreadlist') {
   //   if (bookList.alreadyReadList.length) {
   //     bookList.alreadyReadList= sliceIntoChunks(returnArrayAndExcludedObj(bookList.alreadyReadList, id), 10)
-  //   } 
+  //   }
   // }
   // let foundId = returnArrayAndExcludedObj(pagesArray, id)
   // console.log(foundId)
@@ -118,15 +118,40 @@ const addToRead = (id: number) => {
   // })
 }
 
-const addToAlreadyRead = (id: number) => {
-  // bookList.toReadList.forEach((book, index) => {
-  //   if (book.id === id) {
-  //     bookList.alreadyReadList.push(book)
-  //     bookList.toReadList.splice(index, 1)
-  //   }
-  // })
-  // books.value = sliceIntoChunks(bookList.allBooks, 10)
-  // updateMaxPages(books.value)
+const addToAlreadyReadParent = (id: number) => {
+  if (router.currentRoute.value.name === 'home') {
+    if (bookList.bookshelfList.length) {
+      const obj: IObjInSearch = returnArrayAndExcludedObj(bookList.bookshelfList, id)
+      bookList.bookshelfList = sliceIntoChunks(obj.newArray, 10)
+      console.log(currentPage.currentPage - 1)
+      bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage - 1].content
+      if (!bookList.alreadyReadList.length) {
+        bookList.alreadyReadList = sliceIntoChunks(obj.excluded, 10)
+      } else {
+        const privateArray = intoOneArray(bookList.alreadyReadList)
+        privateArray.push(obj.excluded[0])
+        bookList.alreadyReadList = sliceIntoChunks(privateArray, 10)
+      }
+    }
+  } else if (router.currentRoute.value.name === 'readinglist') {
+    if (bookList.toReadList.length) {
+      const obj: IObjInSearch = returnArrayAndExcludedObj(bookList.toReadList, id)
+      if (obj.newArray.length) {
+        bookList.toReadList = sliceIntoChunks(obj.newArray, 10)
+        bookList.currentBookList = bookList.toReadList[currentPage.currentPage - 1].content
+      } else {
+        bookList.toReadList = []
+        bookList.currentBookList = []
+      }
+      if (!bookList.alreadyReadList.length) {
+        bookList.alreadyReadList = sliceIntoChunks(obj.excluded, 10)
+      } else {
+        const privateArray = intoOneArray(bookList.alreadyReadList)
+        privateArray.push(obj.excluded[0])
+        bookList.alreadyReadList = sliceIntoChunks(privateArray, 10)
+      }
+    }
+  }
 }
 
 const updateMaxPages = (value: IPage[]): void => {
@@ -134,11 +159,6 @@ const updateMaxPages = (value: IPage[]): void => {
     currentPage.setPages(value.length)
   }
 }
-
-router.beforeEach((to) => {
-  checkoutNav(to.name as string)
-})
-
 
 watch(
   books,

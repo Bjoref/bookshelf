@@ -7,5 +7,9 @@ export const getPage = (selectedPage: number, books: number, list:IPage[]): void
   const currentPage = pagesData()
   currentPage.currentPage = selectedPage
   currentPage.setPages(books)
-  bookList.currentBookList = list[selectedPage - 1].content
+  if(list && list.length < 1) {
+    bookList.currentBookList = []
+  } else {
+    bookList.currentBookList = list[selectedPage - 1].content
+  }
 }

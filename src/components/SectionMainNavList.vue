@@ -8,7 +8,7 @@
         <RouterLink class="section-main__nav-link" to="/readinglist" data-to="readinglist" @click="checkoutNav">Reading list</RouterLink>
       </li>
       <li class="section-main__nav-item">
-        <RouterLink class="section-main__nav-link" to="/alreadyReadList" data-to="alreadyReadList" @click="checkoutNav">Finished Books</RouterLink>
+        <RouterLink class="section-main__nav-link" to="/alreadyreadlist" data-to="alreadyreadlist" @click="checkoutNav">Finished Books</RouterLink>
       </li>
     </ul>
   </nav>
