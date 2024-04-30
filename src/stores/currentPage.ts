@@ -7,6 +7,7 @@ export const pagesData = defineStore('pagesData', () => {
   const pages = ref<number[]>([])
 
   const setPages = (value: number) => {
+    console.log(value)
     let closeNumbers: number
     if (value >= 3) {
       closeNumbers = 2

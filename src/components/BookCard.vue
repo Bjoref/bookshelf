@@ -19,7 +19,7 @@
       <button v-if="canAdd" @click="addToRead" class="book-list__item-button_add book-list__item-button" :data-book-id="book.id">
         Want to read!
       </button>
-      <button v-if="canRemove" @click="addToAlreadyReadParent" class="book-list__item-button_delete book-list__item-button" :data-book-id="book.id">
+      <button v-if="canRemove" @click="addToAlreadyRead" class="book-list__item-button_delete book-list__item-button" :data-book-id="book.id">
         Already read
       </button>
     </div>
@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import type { IBook } from '@/types/book'
 
-const emits = defineEmits(['addToRead', 'addToAlreadyReadParent'])
+const emits = defineEmits(['addToRead', 'addToAlreadyRead'])
 const props = defineProps<{ book: IBook; canAdd?: boolean; canRemove?: boolean }>()
 
 const genreString = (props.book.genre as string[]).join(', ');
@@ -39,9 +39,9 @@ const addToRead = (e: Event) => {
   const target = e.target as HTMLButtonElement;
   emits('addToRead', Number(target.dataset.bookId));
 }
-const addToAlreadyReadParent = (e: Event) => {
+const addToAlreadyRead = (e: Event) => {
   const target = e.target as HTMLButtonElement;
-  emits('addToAlreadyReadParent', Number(target.dataset.bookId));
+  emits('addToAlreadyRead', Number(target.dataset.bookId));
 }
 </script>
 
