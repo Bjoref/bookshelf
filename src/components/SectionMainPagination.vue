@@ -5,6 +5,7 @@
         class="section-main__pagination-button"
         :disabled="!canPaginateLeft"
         :class="{ 'section-main__pagination-button_disabled': !canPaginateLeft }"
+        @click="paginationLeft"
       >
         <svg
           width="16px"
@@ -26,9 +27,10 @@
     <li class="section-main__pagination-item" v-for="number in pagesNumber" :key="number">
       <button
         @click="getPage"
-        class="section-main__pagination-button"
-        :class="{ 'section-main__pagination-button_active': number === currentPage }"
-        :data-test="number"
+        class="section-main__pagination-button section-main__pagination-button_page"
+        :class="{ 'section-main__pagination-button_active': number === currentPage.currentPage }"
+        :data-page="number"
+        :id="`section-main__pagination-button_${number}`"
       >
         {{ number }}
       </button>
@@ -38,6 +40,7 @@
         class="section-main__pagination-button"
         :disabled="!canPaginateRight"
         :class="{ 'section-main__pagination-button_disabled': !canPaginateRight }"
+        @click="paginationRight"
       >
         <svg
           width="16px"
@@ -61,11 +64,41 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps<{ pagesNumber: number[]; currentPage: number; maxPages: number }>()
+const props = defineProps<{ pagesNumber: number[]; maxPages: number }>()
 const emits = defineEmits(['getPage'])
+import router from '@/router/router'
+//stores
+import { pagesData } from '@/stores/currentPage'
 
-const canPaginateLeft = computed(() => false)
-const canPaginateRight = computed(() => true)
+const currentPage = pagesData()
+
+const canPaginateLeft = computed(() => {
+  if(currentPage.currentPage > 1) {
+    return true
+  }
+  return false
+})
+const canPaginateRight = computed(() => {
+  if(currentPage.currentPage < currentPage.maxPages) {
+    return true
+  }
+  return false
+})
+
+
+const paginationLeft = ():void =>{
+  if(currentPage.currentPage - 1 > 0) {
+    currentPage.currentPage -= 1
+    emits('getPage', router.currentRoute.value.name)
+  }
+}
+
+const paginationRight = ():void => {
+  if(currentPage.currentPage + 1 <= currentPage.maxPages) {
+    currentPage.currentPage += 1
+    emits('getPage', router.currentRoute.value.name)
+  }
+}
 
 const getPage = (event: Event) => {
   const target = event.target as HTMLButtonElement
@@ -75,6 +108,7 @@ const getPage = (event: Event) => {
 
   target.classList.add('section-main__pagination-button_active')
 
-  emits('getPage', Number(target.textContent))
+  currentPage.currentPage = Number(target.dataset.page)
+  emits('getPage', router.currentRoute.value.name)
 }
 </script>

@@ -7,7 +7,6 @@ export const pagesData = defineStore('pagesData', () => {
   const pages = ref<number[]>([])
 
   const setPages = (value: number) => {
-    console.log(value)
     let closeNumbers: number
     if (value >= 3) {
       closeNumbers = 2
@@ -27,10 +26,12 @@ export const pagesData = defineStore('pagesData', () => {
       } else {
         closeNumbers = 2
       }
-      pages.value.push(currentPage.value)
-      for (let i = 1; i <= closeNumbers; i++) {
-        pages.value.push(i + 1)
+      if (value !== 0 && value !== 1) {
+        for (let i = 1; i <= closeNumbers; i++) {
+          pages.value.push(i + 1)
+        }
       }
+      pages.value.push(currentPage.value)
     } else if (currentPage.value === maxPages.value) {
       pages.value.push(currentPage.value)
       for (let i = 1; i <= closeNumbers; i++) {

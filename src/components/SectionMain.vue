@@ -4,7 +4,7 @@
       :pages-number="currentPage.pages"
       :current-page="currentPage.currentPage"
       :max-pages="currentPage.maxPages"
-      @get-page="getPage"
+      @get-page="checkoutNav"
     />
     <div class="section-main__content">
       <NavList @checkout-nav="checkoutNav" />
@@ -40,7 +40,6 @@ import { intoOneArray } from '@/api/intoOneArray'
 
 //types
 import type { IPage } from '@/types/page'
-import type { IBook } from '@/types/book'
 import type { IObjInSearch } from '@/types/objInSearch'
 
 const bookList = newBookList()
@@ -59,17 +58,17 @@ const checkoutNav = (to: string) => {
     case 'home':
       canAdd.value = true
       canRemove.value = true
-      getPage(1, intoOneArray(bookList.bookshelfList).length, bookList.bookshelfList)
+      getPage(currentPage.currentPage, intoOneArray(bookList.bookshelfList).length, bookList.bookshelfList)
       break
     case 'readinglist':
       canAdd.value = false
       canRemove.value = true
-      getPage(1, intoOneArray(bookList.toReadList).length, bookList.toReadList)
+      getPage(currentPage.currentPage, intoOneArray(bookList.toReadList).length, bookList.toReadList)
       break
     case 'alreadyreadlist':
       canAdd.value = true
       canRemove.value = false
-      getPage(1, intoOneArray(bookList.alreadyReadList).length, bookList.alreadyReadList)
+      getPage(currentPage.currentPage, intoOneArray(bookList.alreadyReadList).length, bookList.alreadyReadList)
       break
   }
 }
