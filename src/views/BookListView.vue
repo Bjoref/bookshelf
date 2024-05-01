@@ -33,6 +33,11 @@ const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolea
 
 <style lang="scss">
 .book-list {
+  &__button {
+    &-group {
+      margin-top: auto;
+    }
+  }
   &__list {
     width: 100%;
     display: grid;
@@ -44,7 +49,6 @@ const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolea
     &-left {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
   }
 

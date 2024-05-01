@@ -6,6 +6,7 @@
       :max-pages="currentPage.maxPages"
       @get-page="checkoutNav"
     />
+    <Search @search="search" />
     <div class="section-main__content">
       <NavList @checkout-nav="checkoutNav" />
       <RouterView
@@ -24,6 +25,7 @@ import { watch, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import NavList from './SectionMainNavList.vue'
 import Pagination from './SectionMainPagination.vue'
+import Search from './SectionMainSearch.vue'
 import router from '@/router/router'
 
 //stores
@@ -41,6 +43,7 @@ import { intoOneArray } from '@/api/intoOneArray'
 //types
 import type { IPage } from '@/types/page'
 import type { IObjInSearch } from '@/types/objInSearch'
+import type { IBook } from '@/types/book'
 
 const bookList = newBookList()
 const currentPage = pagesData()
@@ -58,17 +61,29 @@ const checkoutNav = (to: string) => {
     case 'home':
       canAdd.value = true
       canRemove.value = true
-      getPage(currentPage.currentPage, intoOneArray(bookList.bookshelfList).length, bookList.bookshelfList)
+      getPage(
+        currentPage.currentPage,
+        intoOneArray(bookList.bookshelfList).length,
+        bookList.bookshelfList
+      )
       break
     case 'readinglist':
       canAdd.value = false
       canRemove.value = true
-      getPage(currentPage.currentPage, intoOneArray(bookList.toReadList).length, bookList.toReadList)
+      getPage(
+        currentPage.currentPage,
+        intoOneArray(bookList.toReadList).length,
+        bookList.toReadList
+      )
       break
     case 'alreadyreadlist':
       canAdd.value = true
       canRemove.value = false
-      getPage(currentPage.currentPage, intoOneArray(bookList.alreadyReadList).length, bookList.alreadyReadList)
+      getPage(
+        currentPage.currentPage,
+        intoOneArray(bookList.alreadyReadList).length,
+        bookList.alreadyReadList
+      )
       break
   }
 }
@@ -193,6 +208,29 @@ const updateMaxPages = (value: IPage[]): void => {
   }
 }
 
+const search = (data: string) => {
+  const allBooks: IBook[] = intoOneArray(bookList.bookshelfList)
+  bookList.currentBookList = []
+  allBooks.forEach((book) => {
+    if(book.title.toLocaleLowerCase().includes(data.toLocaleLowerCase())) {
+      bookList.currentBookList.push(book)
+    }
+  })
+  // switch (router.currentRoute.value.name) {
+  //   case 'home':
+
+  //     break
+  //   case 'readinglist':
+  //     console.log(intoOneArray(bookList.toReadList))
+
+  //     break
+  //   case 'alreadyreadlist':
+  //     console.log(intoOneArray(bookList.alreadyReadList))
+
+  //     break
+  // }
+}
+
 watch(
   books,
   () => {
@@ -222,6 +260,15 @@ watch(
   padding-top: 80px;
   padding-bottom: 80px;
   font-size: 16px;
+
+  &__input {
+    &-search {
+      max-width: 30%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid var(--primary-color);
+    }
+  }
 
   &__container {
     display: flex;
