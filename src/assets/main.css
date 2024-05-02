@@ -1,4 +1,7 @@
 @import './reset.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --container-width: 1640px;
@@ -61,7 +64,7 @@ body {
   font-weight: 700;
   font-style: normal;
 }
-
+/* 
 .container {
   padding: 0 var(--container-padding);
   max-width: var(--container-width);
@@ -74,4 +77,4 @@ body {
   @media (min-width: 1399.98px) {
     padding: 0 var(--container-padding_desk);
   }
-}
+} */

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <div class="container header__container">
+    <div class="container header__container mx-auto">
       <a href="#" class="header__logo-link">
         <img class="header__logo-img" src="@/assets/logo.svg" alt="Logo" />
       </a>

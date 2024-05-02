@@ -1,5 +1,5 @@
 <template>
-  <div class="container section-welcome__container">
+  <div class="container section-welcome__container mx-auto">
     <h1 class="section-welcome__title">Hello there!</h1>
     <h2 class="section-welcome__second-title">Stack:</h2>
 
@@ -32,7 +32,11 @@
       </li>
       <li class="section-welcome__item">
         <IconScss />
-        <a class="section-welcome__item-link section-welcome__item-link" href="https://sass-lang.com/guide/" target="_blank">
+        <a
+          class="section-welcome__item-link section-welcome__item-link"
+          href="https://sass-lang.com/guide/"
+          target="_blank"
+        >
           SCSS
         </a>
         &&

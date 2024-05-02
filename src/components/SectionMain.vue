@@ -1,5 +1,5 @@
 <template>
-  <div class="container section-main__container">
+  <div class="container section-main__container mx-auto">
     <Pagination
       :pages-number="currentPage.pages"
       :current-page="currentPage.currentPage"
@@ -148,13 +148,7 @@ const addToAlreadyRead = (id: number) => {
 
 const addToLibrary = (id: number) => {
   if (router.currentRoute.value.name === 'readinglist') {
-    addBookToList(
-      bookList.toReadList,
-      id,
-      'toReadList',
-      bookList.bookshelfList,
-      'bookshelfList'
-    )
+    addBookToList(bookList.toReadList, id, 'toReadList', bookList.bookshelfList, 'bookshelfList')
   } else if (router.currentRoute.value.name === 'alreadyreadlist') {
     addBookToList(
       bookList.alreadyReadList,
@@ -221,13 +215,11 @@ const addBookToList = (
         const privateArray = intoOneArray(bookList.toReadList)
         privateArray.push(obj.excluded[0])
         bookList.toReadList = sliceIntoChunks(privateArray, 10)
-      } 
-      else if (listToName === 'alreadyReadList') {
+      } else if (listToName === 'alreadyReadList') {
         const privateArray = intoOneArray(bookList.alreadyReadList)
         privateArray.push(obj.excluded[0])
         bookList.alreadyReadList = sliceIntoChunks(privateArray, 10)
-      }
-      else if (listToName === 'bookshelfList') {
+      } else if (listToName === 'bookshelfList') {
         const privateArray = intoOneArray(bookList.bookshelfList)
         privateArray.push(obj.excluded[0])
         bookList.bookshelfList = sliceIntoChunks(privateArray, 10)
