@@ -64,8 +64,10 @@ const checkoutNav = (to: string) => {
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.bookshelfList).length,
-        bookList.bookshelfList
+        bookList.bookshelfList,
+        to
       )
+      currentPage.maxPages = bookList.bookshelfList.length
       break
     case 'readinglist':
       canAdd.value = false
@@ -73,8 +75,10 @@ const checkoutNav = (to: string) => {
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.toReadList).length,
-        bookList.toReadList
+        bookList.toReadList,
+        to
       )
+      currentPage.maxPages = bookList.toReadList.length
       break
     case 'alreadyreadlist':
       canAdd.value = true
@@ -82,8 +86,10 @@ const checkoutNav = (to: string) => {
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.alreadyReadList).length,
-        bookList.alreadyReadList
+        bookList.alreadyReadList,
+        to
       )
+      currentPage.maxPages = bookList.alreadyReadList.length
       break
   }
 }
@@ -93,7 +99,7 @@ const loadProducts = async (searchText?: string) => {
     const response = getBooks(searchText)
     bookList.bookshelfList = await response
     books.value = await response
-    currentPage.maxPages = 5
+    currentPage.maxPages = bookList.bookshelfList.length
     currentPage.currentPage = 1
     authorization.loggedIn = true
   } else {
@@ -148,6 +154,10 @@ const addBookToList = (
         case 'bookshelfList':
           bookList.bookshelfList = sliceIntoChunks(obj.newArray, 10)
           bookList.currentBookList = bookList.bookshelfList[currentPage.currentPage - 1].content
+          break
+        case 'toReadList':
+          bookList.toReadList = sliceIntoChunks(obj.newArray, 10)
+          bookList.currentBookList = bookList.toReadList[currentPage.currentPage - 1].content
           break
         case 'alreadyReadList':
           bookList.alreadyReadList = sliceIntoChunks(obj.newArray, 10)
@@ -204,31 +214,43 @@ const addBookToList = (
 
 const updateMaxPages = (value: IPage[]): void => {
   if (value.length <= currentPage.pages.length) {
-    currentPage.setPages(value.length)
+    currentPage.setPages(value.length, router.currentRoute.value.name as string)
   }
 }
 
 const search = (data: string) => {
-  const allBooks: IBook[] = intoOneArray(bookList.bookshelfList)
+  const allBooks = ref<IBook[]>([])
   bookList.currentBookList = []
-  allBooks.forEach((book) => {
-    if(book.title.toLocaleLowerCase().includes(data.toLocaleLowerCase())) {
-      bookList.currentBookList.push(book)
-    }
-  })
-  // switch (router.currentRoute.value.name) {
-  //   case 'home':
+  switch (router.currentRoute.value.name) {
+    case 'home':
+      allBooks.value = intoOneArray(bookList.bookshelfList)
+      bookList.currentBookList = []
+      allBooks.value.forEach((book) => {
+        if (book.title.toLocaleLowerCase().includes(data.toLocaleLowerCase())) {
+          bookList.currentBookList.push(book)
+        }
+      })
+      break
+    case 'readinglist':
+      allBooks.value = intoOneArray(bookList.toReadList)
+      bookList.currentBookList = []
+      allBooks.value.forEach((book) => {
+        if (book.title.toLocaleLowerCase().includes(data.toLocaleLowerCase())) {
+          bookList.currentBookList.push(book)
+        }
+      })
+      break
+    case 'alreadyreadlist':
+      allBooks.value = intoOneArray(bookList.alreadyReadList)
+      bookList.currentBookList = []
+      allBooks.value.forEach((book) => {
+        if (book.title.toLocaleLowerCase().includes(data.toLocaleLowerCase())) {
+          bookList.currentBookList.push(book)
+        }
+      })
 
-  //     break
-  //   case 'readinglist':
-  //     console.log(intoOneArray(bookList.toReadList))
-
-  //     break
-  //   case 'alreadyreadlist':
-  //     console.log(intoOneArray(bookList.alreadyReadList))
-
-  //     break
-  // }
+      break
+  }
 }
 
 watch(
