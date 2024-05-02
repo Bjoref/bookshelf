@@ -5,13 +5,15 @@
 
   </div> -->
   <ul class="book-list__list">
-    <li class="book-list__item" v-for="book in props.books" :key="book.id">
+    <li class="book-list__item" v-for="(book) in props.books" :key="book.id">
       <BookCard
         :book="book"
         :can-add="canAdd"
         :can-remove="canRemove"
+        :can-return="canReturn"
         @add-to-read="addToRead"
         @add-to-already-read="addToAlreadyRead"
+        @add-to-library="addToLibrary"
       />
     </li>
   </ul>
@@ -20,7 +22,7 @@
 <script setup lang="ts">
 import type { IBook } from '@/types/book'
 import BookCard from '../components/BookCard.vue'
-const emits = defineEmits(['addToRead', 'addToAlreadyRead'])
+const emits = defineEmits(['addToRead', 'addToAlreadyRead', 'addToLibrary'])
 
 const addToRead = (id: number) => {
   emits('addToRead', id)
@@ -28,7 +30,10 @@ const addToRead = (id: number) => {
 const addToAlreadyRead = (id: number) => {
   emits('addToAlreadyRead', id)
 }
-const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolean }>()
+const addToLibrary = (id: number) => {
+  emits('addToLibrary', id)
+}
+const props = defineProps<{ books: IBook[]; canAdd?: boolean; canRemove?: boolean, canReturn?: boolean }>()
 </script>
 
 <style lang="scss">

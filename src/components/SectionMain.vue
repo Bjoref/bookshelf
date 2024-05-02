@@ -13,8 +13,10 @@
         :books="bookList.currentBookList"
         :can-add="canAdd"
         :can-remove="canRemove"
+        :can-return="canReturn"
         @add-to-read="addToRead"
         @add-to-already-read="addToAlreadyRead"
+        @add-to-library="addToLibrary"
       />
     </div>
   </div>
@@ -51,6 +53,7 @@ const authorization = userAuthorization()
 
 const canAdd = ref(true)
 const canRemove = ref(true)
+const canReturn = ref(false)
 
 const books = ref<IPage[]>([])
 
@@ -61,6 +64,7 @@ const checkoutNav = (to: string) => {
     case 'home':
       canAdd.value = true
       canRemove.value = true
+      canReturn.value = false
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.bookshelfList).length,
@@ -72,6 +76,7 @@ const checkoutNav = (to: string) => {
     case 'readinglist':
       canAdd.value = false
       canRemove.value = true
+      canReturn.value = true
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.toReadList).length,
@@ -83,6 +88,7 @@ const checkoutNav = (to: string) => {
     case 'alreadyreadlist':
       canAdd.value = true
       canRemove.value = false
+      canReturn.value = true
       getPage(
         currentPage.currentPage,
         intoOneArray(bookList.alreadyReadList).length,
@@ -140,6 +146,26 @@ const addToAlreadyRead = (id: number) => {
   }
 }
 
+const addToLibrary = (id: number) => {
+  if (router.currentRoute.value.name === 'readinglist') {
+    addBookToList(
+      bookList.toReadList,
+      id,
+      'toReadList',
+      bookList.bookshelfList,
+      'bookshelfList'
+    )
+  } else if (router.currentRoute.value.name === 'alreadyreadlist') {
+    addBookToList(
+      bookList.alreadyReadList,
+      id,
+      'alreadyReadList',
+      bookList.bookshelfList,
+      'bookshelfList'
+    )
+  }
+}
+
 const addBookToList = (
   propList: IPage[],
   id: number,
@@ -186,16 +212,25 @@ const addBookToList = (
         case 'alreadyReadList':
           bookList.alreadyReadList = sliceIntoChunks(obj.excluded, 10)
           break
+        case 'bookshelfList':
+          bookList.bookshelfList = sliceIntoChunks(obj.excluded, 10)
+          break
       }
     } else {
       if (listToName === 'toReadList') {
         const privateArray = intoOneArray(bookList.toReadList)
         privateArray.push(obj.excluded[0])
         bookList.toReadList = sliceIntoChunks(privateArray, 10)
-      } else if (listToName === 'alreadyReadList') {
+      } 
+      else if (listToName === 'alreadyReadList') {
         const privateArray = intoOneArray(bookList.alreadyReadList)
         privateArray.push(obj.excluded[0])
         bookList.alreadyReadList = sliceIntoChunks(privateArray, 10)
+      }
+      else if (listToName === 'bookshelfList') {
+        const privateArray = intoOneArray(bookList.bookshelfList)
+        privateArray.push(obj.excluded[0])
+        bookList.bookshelfList = sliceIntoChunks(privateArray, 10)
       }
     }
     switch (listName) {
@@ -248,7 +283,6 @@ const search = (data: string) => {
           bookList.currentBookList.push(book)
         }
       })
-
       break
   }
 }

@@ -1,6 +1,7 @@
 import type { IBook } from "@/types/book"
 
 export const binarySearch = (arr: IBook[], target: number): number => {
+    arr = arr.sort((a, b) => a.id - b.id)
     let low = 0
     let high = arr.length - 1
   
