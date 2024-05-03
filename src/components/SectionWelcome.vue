@@ -2,54 +2,6 @@
   <div class="container section-welcome__container mx-auto">
     <div>
       <h1 class="section-welcome__title">Hello there!</h1>
-      <h2 class="section-welcome__second-title">Stack:</h2>
-
-      <ul class="section-welcome__list">
-        <li class="section-welcome__item">
-          <IconVue />
-          <a
-            class="section-welcome__item-link"
-            href="https://vuejs.org/guide/quick-start"
-            target="_blank"
-          >
-            Vue.js
-          </a>
-        </li>
-        <li class="section-welcome__item">
-          <IconPinia />
-          <a class="section-welcome__item-link" href="https://pinia.vuejs.org/" target="_blank">
-            Pinia
-          </a>
-        </li>
-        <li class="section-welcome__item">
-          <IconTs />
-          <a
-            class="section-welcome__item-link"
-            href="https://www.typescriptlang.org/"
-            target="_blank"
-          >
-            TypeScript
-          </a>
-        </li>
-        <li class="section-welcome__item">
-          <IconScss />
-          <a
-            class="section-welcome__item-link section-welcome__item-link"
-            href="https://sass-lang.com/guide/"
-            target="_blank"
-          >
-            SCSS
-          </a>
-          &&
-          <a
-            class="section-welcome__item-link"
-            href="https://cli.vuejs.org/guide/css.html#pre-processors"
-            target="_blank"
-          >
-            SCSS in Vue
-          </a>
-        </li>
-      </ul>
     </div>
     <Pagination
       :pages-number="currentPage.pages"
@@ -58,9 +10,57 @@
       :welcome="true"
       @get-page="checkoutNav"
     />
-    <ul class="book-list__list">
+    <ul class="book-list__list mb-4">
       <li class="book-list__item" v-for="book in bookList.currentBookList" :key="book.id">
         <BookCard :book="book" :can-add="false" :can-remove="false" :can-return="false" />
+      </li>
+    </ul>
+    <h2 class="section-welcome__second-title">Stack:</h2>
+
+    <ul class="section-welcome__list">
+      <li class="section-welcome__item">
+        <IconVue />
+        <a
+          class="section-welcome__item-link"
+          href="https://vuejs.org/guide/quick-start"
+          target="_blank"
+        >
+          Vue.js
+        </a>
+      </li>
+      <li class="section-welcome__item">
+        <IconPinia />
+        <a class="section-welcome__item-link" href="https://pinia.vuejs.org/" target="_blank">
+          Pinia
+        </a>
+      </li>
+      <li class="section-welcome__item">
+        <IconTs />
+        <a
+          class="section-welcome__item-link"
+          href="https://www.typescriptlang.org/"
+          target="_blank"
+        >
+          TypeScript
+        </a>
+      </li>
+      <li class="section-welcome__item">
+        <IconScss />
+        <a
+          class="section-welcome__item-link section-welcome__item-link"
+          href="https://sass-lang.com/guide/"
+          target="_blank"
+        >
+          SCSS
+        </a>
+        &&
+        <a
+          class="section-welcome__item-link"
+          href="https://cli.vuejs.org/guide/css.html#pre-processors"
+          target="_blank"
+        >
+          SCSS in Vue
+        </a>
       </li>
     </ul>
   </div>
@@ -121,8 +121,8 @@ loadProducts()
   }
 
   &__list {
-    margin-bottom: 20px;
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
     font-size: 20px;
   }
