@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps<{ pagesNumber: number[]; maxPages: number }>()
+const props = defineProps<{ pagesNumber: number[]; maxPages: number, welcome?: boolean }>()
 const emits = defineEmits(['getPage'])
 import router from '@/router/router'
 //stores
@@ -89,14 +89,22 @@ const canPaginateRight = computed(() => {
 const paginationLeft = ():void =>{
   if(currentPage.currentPage - 1 > 0) {
     currentPage.currentPage -= 1
-    emits('getPage', router.currentRoute.value.name)
+    if(!props.welcome) {
+      emits('getPage', router.currentRoute.value.name)
+    } else {
+      emits('getPage', 'welcome')
+    }
   }
 }
 
 const paginationRight = ():void => {
   if(currentPage.currentPage + 1 <= currentPage.maxPages) {
     currentPage.currentPage += 1
-    emits('getPage', router.currentRoute.value.name)
+    if(!props.welcome) {
+      emits('getPage', router.currentRoute.value.name)
+    } else {
+      emits('getPage', 'welcome')
+    }
   }
 }
 
@@ -109,6 +117,10 @@ const getPage = (event: Event) => {
   target.classList.add('section-main__pagination-button_active')
 
   currentPage.currentPage = Number(target.dataset.page)
-  emits('getPage', router.currentRoute.value.name)
+  if(!props.welcome) {
+      emits('getPage', router.currentRoute.value.name)
+    } else {
+      emits('getPage', 'welcome')
+    }
 }
 </script>

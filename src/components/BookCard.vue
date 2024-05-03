@@ -1,6 +1,6 @@
 <template>
   <div class="book-list__content-left">
-    <h3 class="book-list__item-title">
+    <h3 class="book-list__item-title font-bold">
       {{ book.title }}
     </h3>
     <p class="book-list__item-author">

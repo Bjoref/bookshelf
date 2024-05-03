@@ -109,6 +109,7 @@ const loadProducts = async (searchText?: string) => {
     currentPage.currentPage = 1
     authorization.loggedIn = true
   } else {
+    checkoutNav(router.currentRoute.value.name as string)
     return
   }
 }

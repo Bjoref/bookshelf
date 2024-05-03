@@ -6,8 +6,9 @@ import type { IPage } from '@/types/page'
 
 export const newBookList = defineStore('bookList', () => {
   const bookshelfList = ref<IPage[]>([])
+  const welcomeBookshelf = ref<IPage[]>([])
   const toReadList = ref<IPage[]>([])
   const alreadyReadList = ref<IPage[]>([])
   const currentBookList = ref<IBook[]>([])
-  return { currentBookList, toReadList, alreadyReadList, bookshelfList }
+  return { currentBookList, toReadList, alreadyReadList, bookshelfList, welcomeBookshelf }
 })

@@ -11,6 +11,9 @@ export const pagesData = defineStore('pagesData', () => {
 
   const setPages = (value: number, to: string): void => {
     switch (to) {
+      case 'welcome':
+        pages.value = [...Array(bookList.welcomeBookshelf.length).keys()].map((i) => i + 1)
+        break
       case 'home':
         pages.value = [...Array(bookList.bookshelfList.length).keys()].map((i) => i + 1)
         break
@@ -25,10 +28,10 @@ export const pagesData = defineStore('pagesData', () => {
 
     if (pages.value.length > 3) {
       closeNumbers.value = 1
-      if(currentPage.value === 1) {
+      if (currentPage.value === 1) {
         pages.value = [...Array(3).keys()].map((i) => i + 1)
-      } else if(currentPage.value-1 !== 0) {
-        if(currentPage.value + 1 > maxPages.value) {
+      } else if (currentPage.value - 1 !== 0) {
+        if (currentPage.value + 1 > maxPages.value) {
           pages.value = [currentPage.value - 2, currentPage.value - 1, currentPage.value]
         } else {
           pages.value = [currentPage.value - 1, currentPage.value, currentPage.value + 1]
